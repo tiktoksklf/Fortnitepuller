@@ -1,0 +1,209 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fortnite Pulling</title>
+  <link href="https://fonts.googleapis.com/css2?family=Burbank+Big+Condensed&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Burbank Big Condensed', sans-serif;
+      background: radial-gradient(circle at top, #1a1a1a, #121212);
+      color: white;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .btn-custom {
+      background-color: #2d2d2d;
+      transition: 0.3s;
+    }
+    .btn-custom:hover {
+      background-color: #4b4b4b;
+    }
+    .panel {
+      background-color: #1c1c1c;
+      border: 2px solid #3f3f3f;
+      border-radius: 1rem;
+      padding: 2rem;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+    }
+    #output {
+      white-space: pre-wrap;
+      margin-top: 1.5rem;
+      font-size: 1rem;
+      background-color: #141414;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid #333;
+    }
+    .red-text {
+      color: #ff4d4d;
+      font-weight: 600;
+    }
+    .green-text {
+      color: #4dff88;
+      font-weight: 600;
+    }
+    #password-screen {
+      position: fixed;
+      z-index: 9999;
+      background-color: #000;
+      inset: 0;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    #password-box {
+      background-color: #1a1a1a;
+      padding: 2rem;
+      border: 2px solid #333;
+      border-radius: 0.5rem;
+      text-align: center;
+    }
+    #password-input {
+      background-color: #2d2d2d;
+      border: none;
+      padding: 0.75rem;
+      width: 100%;
+      color: white;
+      margin-top: 1rem;
+      border-radius: 0.5rem;
+    }
+    #discord-btn {
+      margin-top: 1rem;
+      background-color: #5865F2;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <!-- PASSWORD SCREEN -->
+  <div id="password-screen">
+    <div id="password-box">
+      <h2 class="text-3xl mb-4">Enter Password</h2>
+      <input type="password" id="password-input" placeholder="Enter site password...">
+      <p class="text-sm mt-2 text-gray-400">Need a key? Join our Discord</p>
+      <button id="discord-btn" onclick="window.open('https://discord.gg/2vs8SKTBUg')">Discord</button>
+    </div>
+  </div>
+
+  <!-- TOP BAR -->
+  <div class="flex justify-between items-center px-6 py-4" style="background-color: #1a1a1a; border-bottom: 1px solid #121212;">
+    <h1 class="text-3xl text-white">Fortnite pulling</h1>
+    <div class="flex gap-4">
+      <button onclick="location.href='https://discord.gg/2vs8SKTBUg'" class="btn-custom text-white py-1 px-3 rounded">Discord</button>
+      <button onclick="location.href='https://doxxed.ink/zaso'" class="btn-custom text-white py-1 px-3 rounded">Founder</button>
+      <button onclick="location.href='Recipt.html'" class="btn-custom text-white py-1 px-3 rounded">Fake a recipt</button>
+    </div>
+  </div>
+
+  <!-- MAIN PANEL -->
+  <main class="flex-grow flex items-center justify-center">
+    <div class="panel">
+      <div class="mb-4">
+        <label class="block mb-1">Platform</label>
+        <select id="platform" class="w-full p-2 bg-gray-800 text-white rounded">
+          <option value="Xbox">Xbox</option>
+          <option value="PSN">PSN</option>
+          <option value="PC">PC</option>
+        </select>
+      </div>
+
+      <div class="mb-4">
+        <label class="block mb-1">Username</label>
+        <input type="text" id="username" placeholder="Enter Username" class="w-full p-2 bg-gray-800 text-white rounded">
+      </div>
+
+      <button onclick="startScan()" class="w-full py-2 rounded btn-custom text-white font-semibold">
+        Scan
+      </button>
+
+      <div id="output"><span class="red-text">Selected Platform: Xbox<br>Username: lol<br>Connecting to Fortnite tracker...</span><br><span class="green-text">Connected<br>Account ID: ID-232399<br>Rank: Gold<br>Last Match: Tue Feb 18 2025</span><br><span class="red-text"><br>Loading Epic Games database...</span><br><span class="green-text">Connected<br>Last IP login: 223.16.54.65</span></div>
+    </div>
+  </main>
+
+  <script>
+    const storedResults = JSON.parse(localStorage.getItem('fortniteData') || '{}');
+    
+    // Check if password has been verified
+    const passwordVerified = localStorage.getItem('passwordVerified') === 'true';
+    
+    // If password is not verified, show the password screen
+    if (!passwordVerified) {
+      document.getElementById('password-screen').style.display = 'flex';
+    }
+
+    function getRandomIP() {
+      return (
+        Math.floor(Math.random() * 255) +
+        '.' +
+        Math.floor(Math.random() * 255) +
+        '.' +
+        Math.floor(Math.random() * 255) +
+        '.' +
+        Math.floor(Math.random() * 255)
+      );
+    }
+
+    function getRandomRank() {
+      const ranks = ['Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Champion'];
+      return ranks[Math.floor(Math.random() * ranks.length)];
+    }
+
+    function startScan() {
+      const platform = document.getElementById('platform').value;
+      const username = document.getElementById('username').value.trim();
+      if (!username) return alert('Enter a username.');
+
+      const key = `${platform}-${username}`;
+
+      if (storedResults[key]) {
+        document.getElementById('output').innerHTML = storedResults[key];
+        return;
+      }
+
+      const output = document.getElementById('output');
+      output.innerHTML = `<span class="red-text">Selected Platform: ${platform}<br>Username: ${username}<br>Connecting to Fortnite tracker...</span>`;
+
+      setTimeout(() => {
+        const accountId = 'ID-' + Math.floor(100000 + Math.random() * 900000);
+        const lastMatch = new Date(Date.now() - Math.random() * 1e10).toDateString();
+        const rank = getRandomRank();
+
+        output.innerHTML += `<br><span class="green-text">Connected<br>Account ID: ${accountId}<br>Rank: ${rank}<br>Last Match: ${lastMatch}</span>`;
+
+        setTimeout(() => {
+          output.innerHTML += `<br><span class="red-text"><br>Loading Epic Games database...</span>`;
+          setTimeout(() => {
+            const ip = getRandomIP();
+            output.innerHTML += `<br><span class="green-text">Connected<br>Last IP login: ${ip}</span>`;
+
+            storedResults[key] = output.innerHTML;
+            localStorage.setItem('fortniteData', JSON.stringify(storedResults));
+          }, 2000);
+        }, 2000);
+      }, 2000);
+    }
+
+    // Password Check
+    document.getElementById('password-input').addEventListener('keyup', function (e) {
+      if (e.key === 'Enter') {
+        if (this.value === 'pullingbyzaso') {
+          localStorage.setItem('passwordVerified', 'true');
+          document.getElementById('password-screen').style.display = 'none';
+        } else {
+          alert('Incorrect password.');
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
